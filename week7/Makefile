@@ -5,3 +5,7 @@ CXX_FLAGS = -std=c++11 -pedantic -Wall -Wextra -ggdb -O0
 
 matrix: matrix.cpp
 	$(CXX) $(CXX_FLAGS) -o $@ $<
+
+.PHONY: format
+format:
+	clang-format -style=file -i matrix.cpp

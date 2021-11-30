@@ -17,20 +17,23 @@
 // 1. https://stackoverflow.com/q/15810171/13041067
 
 #include <algorithm>   // std::transform
-#include <chrono>      // ?
+#include <chrono>      // Timing capabilities
 #include <functional>  // std::bind
 #include <initializer_list>
 #include <iostream>     // std::ostream, std::cout
 #include <stdexcept>    // std::exept
-#include <type_traits>  // ?
+#include <type_traits>  // std::is_arithmetic, std::enable_if
 #include <vector>       // std::vector
 
 // More explicit and hairy (since C++11)
 //  'std::enable_if<std::is_arithmetic<T>::value>::type' is a dependent name, so
 //  we need to tell the compiler it's a name for a type with 'typename'
-template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value>::type>
-// or the shorter way (since C++14 (std::enable_if_t), since C++17(std::is_arithmetic_v))
-// template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+template <typename T,
+          typename =
+              typename std::enable_if<std::is_arithmetic<T>::value>::type>
+// or the shorter way (since C++14 (std::enable_if_t), since
+// C++17(std::is_arithmetic_v)) template <typename T, typename =
+// std::enable_if_t<std::is_arithmetic_v<T>>>
 class matrix {
 private:
     size_t rows_;
@@ -38,7 +41,6 @@ private:
     std::vector<T> data_;
 
 public:
-
     //////////////////
     // Constructors //
     //////////////////
@@ -117,9 +119,6 @@ public:
     /// plain old data type and/or STL data field. These types have will be
     /// copied properly.
 
-
-
-
     //////////////
     // Functors //
     //////////////
@@ -128,7 +127,8 @@ public:
     T &operator()(size_t row, size_t column) {
         // Check if the indices are in bound
         // Idea from: https://codereview.stackexchange.com/a/155849
-        if ((row - 1) >= this->num_rows() || (column - 1) >= this->num_columns())
+        if ((row - 1) >= this->num_rows() ||
+            (column - 1) >= this->num_columns())
             throw std::out_of_range("Index out of bounds");
 
         return data_.at((row - 1) * columns_ + (column - 1));
@@ -136,7 +136,8 @@ public:
 
     /// For accessing elements of a constant matrix variable
     const T &operator()(size_t row, size_t column) const {
-        if ((row - 1) >= this->num_rows() || (column - 1) >= this->num_columns())
+        if ((row - 1) >= this->num_rows() ||
+            (column - 1) >= this->num_columns())
             throw std::out_of_range("Index out of bounds");
 
         return data_.at((row - 1) * columns_ + (column - 1));
@@ -147,9 +148,6 @@ public:
     // size_t num_elements() const noexcept { return data.size(); } // slower?
     size_t num_rows() const noexcept { return rows_; }
     size_t num_columns() const noexcept { return columns_; }
-
-
-
 
     //////////////////////////
     // Non-member functions //
@@ -164,7 +162,8 @@ public:
     //                    out_mat.data_.begin(),
     //                    std::bind(std::multiplies<T>(), std::placeholders::_1,
     //                              std::ref(scale)));
-    //                             //    ^ If by any chance scale changes it captures it. (?)
+    //                             //    ^ If by any chance scale changes it
+    //                             captures it. (?)
     //     return out_mat;
     // }
 
@@ -180,9 +179,9 @@ public:
                           "Use an arithmetic data type!");
 
         matrix out_mat(lhs.num_rows(), lhs.num_columns());
-        std::transform(
-            lhs.data_.begin(), lhs.data_.end(), out_mat.data_.begin(),
-             [&scale](T element) { return element *= scale; });
+        std::transform(lhs.data_.begin(), lhs.data_.end(),
+                       out_mat.data_.begin(),
+                       [&scale](T element) { return element *= scale; });
         return out_mat;
     }
 
@@ -191,21 +190,25 @@ public:
         // if not throw an exception
         // lhs.num_columns() ?= rhs.num_rows()
         if (lhs.num_columns() != rhs.num_rows())
-            throw std::invalid_argument("ERROR: Matrices have invalid sizes for "
-                                        "multiplications!\n\tThey ought to be "
-                                        "in the form: A(a, N) * B(N, b).");
+            throw std::invalid_argument(
+                "ERROR: Matrices have invalid sizes for "
+                "multiplications!\n\tThey ought to be "
+                "in the form: A(a, N) * B(N, b).");
 
         // // Check for valid matrix elements (Using type_traits and exception)
         // if (std::is_arithmetic<T>::value == false)
         //     static_assert(std::is_arithmetic<T>::value,
-        //                   "ERROR: Invalid data type for a matrix. Use an arithmetic data type!");
+        //                   "ERROR: Invalid data type for a matrix. Use an
+        //                   arithmetic data type!");
 
         matrix result(lhs.num_rows(), rhs.num_columns());
 
         for (size_t row = 0; row < lhs.num_rows(); ++row)
             for (size_t col = 0; col < rhs.num_columns(); ++col)
-                for (size_t inner = 0; inner < lhs.num_columns(); ++inner) // or rhs.num_columns
-                    result(row + 1, col + 1) += lhs(row + 1, inner + 1) * rhs(inner + 1, col + 1);
+                for (size_t inner = 0; inner < lhs.num_columns();
+                     ++inner)  // or rhs.num_columns
+                    result(row + 1, col + 1) +=
+                        lhs(row + 1, inner + 1) * rhs(inner + 1, col + 1);
 
         return result;
     }
@@ -245,41 +248,40 @@ int main() {
     // // TODO comment-in the following code as needed to test your
     // implementation
     // // above.
-    matrix<double> a(3, 3, 3);
-    std::cout << a << '\n';
-    a = a * 2;
-    std::cout << a << '\n';
-    matrix<double> b(3, 3, 4);
-    auto start = std::chrono::steady_clock::now();
-    matrix<double> c = a * b;
-    auto end = std::chrono::steady_clock::now();
-    auto duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end -
-        start).count();
-    std::cout << "multiplied a:\n";
-    std::cout << a << '\n';
-    std::cout << "with b:\n";
-    std::cout << b << '\n';
-    std::cout << "in " << duration << "ns\n";
-    std::cout << "result is:\n";
-    std::cout << c << '\n';
+    // matrix<double> a(3, 3, 3);
+    // std::cout << a << '\n';
+    // std::cout << "a * 2:\n" a * 2 << '\n';
+    // matrix<double> b(3, 3, 4);
+    // auto start = std::chrono::steady_clock::now();
+    // matrix<double> c = a * b;
+    // auto end = std::chrono::steady_clock::now();
+    // auto duration =
+    //     std::chrono::duration_cast<std::chrono::nanoseconds>(end - start)
+    //         .count();
+    // std::cout << "multiplied a:\n";
+    // std::cout << a << '\n';
+    // std::cout << "with b:\n";
+    // std::cout << b << '\n';
+    // std::cout << "in " << duration << "ns\n";
+    // std::cout << "result is:\n";
+    // std::cout << c << '\n';
 
-    matrix<double> d = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    std::cout << d << '\n';
-    std::cout << d(2, 3) << '\n';
-    matrix<double> e = {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}};
-    start = std::chrono::steady_clock::now();
-    matrix<double> f = d * e;
-    end = std::chrono::steady_clock::now();
-    duration =
-        std::chrono::duration_cast<std::chrono::nanoseconds>(end -
-        start).count();
-    std::cout << "multiplied d:\n";
-    std::cout << d << '\n';
-    std::cout << "with e:\n";
-    std::cout << e << '\n';
-    std::cout << "in " << duration << "ns\n";
-    std::cout << "result is:\n";
-    std::cout << f << '\n';
+    // matrix<double> d = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    // std::cout << d << '\n';
+    // std::cout << d(2, 3) << '\n';
+    // matrix<double> e = {{9, 8, 7}, {6, 5, 4}, {3, 2, 1}};
+    // start = std::chrono::steady_clock::now();
+    // matrix<double> f = d * e;
+    // end = std::chrono::steady_clock::now();
+    // duration = std::chrono::duration_cast<std::chrono::nanoseconds>(end -
+    // start)
+    //                .count();
+    // std::cout << "multiplied d:\n";
+    // std::cout << d << '\n';
+    // std::cout << "with e:\n";
+    // std::cout << e << '\n';
+    // std::cout << "in " << duration << "ns\n";
+    // std::cout << "result is:\n";
+    // std::cout << f << '\n';
     return 0;
 }
