@@ -1,0 +1,87 @@
+* Intro
+
+Bubble sort, sometimes referred to as sinking sort, is a simple sorting
+algorithm that repeatedly steps through the list, compares adjacent elements and
+swaps them if they are in the wrong order. The pass through the list is repeated
+until the list is sorted. The algorithm, which is a comparison sort, is named
+for the way smaller or larger elements "bubble" to the top of the list.
+
+This simple algorithm performs poorly in real world use and is used primarily as
+an educational tool. More efficient algorithms such as quicksort, timsort, or
+merge sort are used by the sorting libraries built into popular programming
+languages such as Python and Java [1].
+
+* Pseudocode
+  source: [1]
+
+   #+BEGIN_SRC
+    procedure bubbleSort(A : list of sortable items)
+        n := length(A)
+        repeat
+            swapped := false
+            for i := 1 to n-1 inclusive do
+                /* if this pair is out of order */
+                if A[i-1] > A[i] then
+                    /* swap them and remember something changed */
+                    swap(A[i-1], A[i])
+                    swapped := true
+                end if
+            end for
+        until not swapped
+    end procedure
+   #+END_SRC
+
+** Optimizing bubble sort
+   source: [1]
+
+   The bubble sort algorithm can be optimized by observing that the n-th pass finds
+   the n-th largest element and puts it into its final place. So, the inner loop
+   can avoid looking at the last n − 1 items when running for the n-th time:
+
+   #+BEGIN_SRC
+    procedure bubbleSort(A : list of sortable items)
+        n := length(A)
+        repeat
+            swapped := false
+            for i := 1 to n - 1 inclusive do
+                if A[i - 1] > A[i] then
+                    swap(A[i - 1], A[i])
+                    swapped := true
+                end if
+            end for
+            n := n - 1
+        until not swapped
+    end procedure
+   #+END_SRC
+
+More generally, it can happen that more than one element is placed in their
+final position on a single pass. In particular, after every pass, all elements
+after the last swap are sorted, and do not need to be checked again. This allows
+to skip over many elements, resulting in about a worst case 50% improvement in
+comparison count (though no improvement in swap counts), and adds very little
+complexity because the new code subsumes the "swapped" variable:
+
+To accomplish this in pseudocode, the following can be written:
+
+   #+BEGIN_SRC
+    procedure bubbleSort(A : list of sortable items)
+        n := length(A)
+        repeat
+            newn := 0
+            for i := 1 to n - 1 inclusive do
+                if A[i - 1] > A[i] then
+                    swap(A[i - 1], A[i])
+                    newn := i
+                end if
+            end for
+            n := newn
+        until n ≤ 1
+    end procedure
+   #+END_SRC
+
+Alternate modifications, such as the cocktail shaker sort attempt to improve on
+the bubble sort performance while keeping the same idea of repeatedly comparing
+and swapping adjacent items.
+
+* Refs
+[1]: https://en.wikipedia.org/wiki/Bubble_sort#Pseudocode_implementation
