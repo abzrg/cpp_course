@@ -10,6 +10,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef SINT_H_
+#define SINT_H_
+
 #include <exception>
 #include <iostream>
 #include <limits>
@@ -38,3 +41,5 @@ public:
     sint operator--(int);  // postfix ++: dummy parameter, returns a value
     friend std::ostream &operator<<(std::ostream &os, const sint &s);
 };
+
+#endif

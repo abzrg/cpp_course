@@ -10,6 +10,9 @@
 //
 //===----------------------------------------------------------------------===//
 
+#ifndef CONTAINER_H_
+#define CONTAINER_H_
+
 #include <iostream>
 #include <list>
 #include <vector>
@@ -51,3 +54,4 @@ private:
     std::list<double> data;
 };
 
+#endif
