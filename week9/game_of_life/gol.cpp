@@ -1,7 +1,5 @@
 #include "gol.h"
 
-#include <stdexcept>
-
 // Reads A Grid (normally an initial seed) from file
 Grid read_grid(const std::string &filename) {
     // Create an empty grid
