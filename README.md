@@ -7,8 +7,8 @@ The home for the 2021 version of the course is
 ## DISCLAIMER
 This repository is only for my use to document my progress during the
 course. Please don't just copy the code mindlessly without trying to solve the
-problems yourself, it's totally pointless if you actually wanna learn how to
-write software a blatant violation of the policy[^1] of the course.
+problems yourself, as it's totally pointless (if you actually wanna learn how to
+write software) and a blatant violation of the policy[^1] of the course.
 
 
 [^1]:
