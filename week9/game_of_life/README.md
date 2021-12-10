@@ -1,9 +1,6 @@
-# Week9
+# Game of life
 
-
-## Game of life
-
-### References:
+## References:
 
 1. [Cellular Automation](https://en.wikipedia.org/wiki/Cellular_automaton)
 2. [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
