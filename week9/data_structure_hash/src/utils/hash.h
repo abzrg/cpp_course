@@ -212,6 +212,8 @@ public:
             it = data_begin_it + p;
             if (it->first == key) {
                 data.erase(it);
+                // Note that at this point, `it` is an invalidated pointer,
+                // and you cannot dereference it.
                 data.insert(data.begin() + p, std::pair<std::string, T>());
                 positions_in_use[it - data.begin()] = false;
                 return;
