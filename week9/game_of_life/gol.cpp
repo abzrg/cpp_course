@@ -55,11 +55,12 @@ Grid game_of_life(const Grid &grid, const size_t N) {
             for (size_t col = 1; col < nCols - 1; ++col) {
                 // Count the neighbors
                 size_t living_neighbors = 0;
+                // clang-format off
                 living_neighbors +=
-                    current[row - 1][col + 1] + current[row][col + 1] +
-                    current[row + 1][col + 1] + current[row - 1][col] + 0 +
-                    current[row + 1][col] + current[row - 1][col - 1] +
-                    current[row][col - 1] + current[row + 1][col - 1];
+                      current[row - 1][col + 1] + current[row][col + 1] + current[row + 1][col + 1]
+                    + current[row - 1][col    ] +          0            + current[row + 1][col    ]
+                    + current[row - 1][col - 1] + current[row][col - 1] + current[row + 1][col - 1];
+                //clang-format on
 
                 if (current[row][col] == false) {  // If already dead
                     successor[row][col] = living_neighbors == 3;  // [1]
