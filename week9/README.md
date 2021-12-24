@@ -35,4 +35,5 @@
 - [Chapter 23, learncpp.com](https://www.learncpp.com/cpp-tutorial/input-and-output-io-streams/)
 - [Buffered vs unbuffered IO](https://stackoverflow.com/a/1450563/13041067)
 - [What does flushing the buffer mean?](https://stackoverflow.com/q/15042849/13041067)
+- [Serialization (ISO C++)](https://isocpp.org/wiki/faq/serialization)
 
